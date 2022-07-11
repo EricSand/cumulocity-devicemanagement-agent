@@ -1,28 +1,36 @@
 # Cumulocity IoT Device Management Reference Agent
-Cumulocity Device Management (DM) Reference Agent written in Python3 to demonstrate most of the [Device Management Capabilities](https://cumulocity.com/guides/users-guide/device-management/) of [Cumulocity IoT](https://www.softwareag.cloud/site/product/cumulocity-iot.html)
+Cumulocity Device Management (DM) Reference Agent written in Python3 to demonstrate most of the [Device Management Capabilities](https://cumulocity.com/guides/users-guide/device-management/) of [Cumulocity IoT](https://www.softwareag.cloud/site/product/cumulocity-iot.html).
 
 # Quick Start
-## Native
-
-To quickly run the agent natively make sure pyhton 3.7+ and pip is installed on your computer. 
-Manually put the [config file](./config/agent.ini) and the [DM_Agent.json](./config/DM_Agent.json) into the /.cumulocity folder in your **user folder**. 
-For example: "/home/user1/.cumulocity" in Linux or "C:\Users\user1\\.cumulocity" in Windows.
-
-Installation
-
-    pip install c8ydm
-
-To start the agent run
-
-    c8ydm.start
-
-and to stop run
-
-    c8ydm.stop
-
+The agent can run either natively or as docker container (build yourself or using a pre-build image from docker-hub). Docker method is the fastest way to get to a working demo, while native enables you extend the agents functionality.
 
 ## Docker
-To quickly run the agent clone this repo somewhere on your disk, make sure that Docker is installed on your computer and run in a Linux Shell:
+### Using Pre-Build Image
+The fastest way to get running is to run a docker container using the following command (change `<yourTenant>`):
+
+```shell
+docker run -d \
+  --name=C8Y_DM_Reference_Agent \
+  -e C8YDM_MQTT_URL=<yourTenant>.cumulocity.com \
+  switschel/c8ydm
+```
+
+Alternatively, you can create a `docker-compose.yml` with the following content (change `<yourTenant>`):
+```yml
+version: "3.9"
+services:
+  agent:
+    image: switschel/c8ydm
+    container_name: C8Y_Device_Mgmt_Reference_Agent
+    restart: unless-stopped
+    environment:
+      - C8YDM_MQTT_URL=<yourTenant>.cumulocity.com
+```
+Start the docker compose with the command `docker-compose up -d`.
+
+### Build Docker Image Yourself
+
+Clone this repo somewhere on your disk, make sure that Docker is installed on your computer and run in a Linux Shell:
 
     ./start.sh
 
@@ -47,32 +55,26 @@ You can find it out with:
     docker ps
 
 If you want to run the Agent without using docker you need to [build](#build) and  [run](#run) the Agent manually.
-### Quick Start Configuration (Docker)
 
-The DM Agent configuration can be either set by changing the [agent.ini](./config/agent.ini) or setting variables **before** you build or start the container.
-For example to use [Device Certificates](https://cumulocity.com/guides/device-sdk/mqtt/#device-certificates) you can use the following ENV Variables.
+## Native
 
-```
-C8YDM_MQTT_URL=<tenant domain> \
-C8YDM_MQTT_CERT_AUTH=TRUE \
-C8YDM_MQTT_CLIENT_CERT=<path to cert file> \
-C8YDM_MQTT_CLIENT_KEY=<path to key file>
-```
-As normal run ./start.sh afterwards.
+To quickly run the agent natively make sure pyhton 3.7+ and pip is installed on your computer. 
+Manually put the [config file](./config/agent.ini) and the [DM_Agent.json](./config/DM_Agent.json) into the /.cumulocity folder in your **user folder**. 
+For example: "/home/user1/.cumulocity" in Linux or "C:\Users\user1\\.cumulocity" in Windows.
 
-If you want to use Cloud Remote Access with a VNC server, you can install the server and a desktop environment:
+Installation
 
-```
-INSTALL_VNC=1 ./start.sh
-```
+    pip install c8ydm
 
-By default, the docker container runs in background. If you want to run it interactively:
+To start the agent run
 
-```
-INTERACTIVE=1 ./start.sh
-```
+    c8ydm.start
 
-If you don't want to run within docker follow the steps below.
+and to stop run
+
+    c8ydm.stop
+
+
 
 # Features
 
